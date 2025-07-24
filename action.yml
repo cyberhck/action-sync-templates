@@ -1,0 +1,40 @@
+name: Template File Sync
+description: Pulls selected files from a template repo and syncs them into this repo.
+author: cyberhck
+
+inputs:
+  template-repo:
+    required: true
+    description: Template repository in the form owner/repo (e.g. your-org/your-template-repo)
+  template-branch:
+    default: main
+    description: Branch to pull from
+  config-path:
+    default: .github/.template-sync.json
+    description: Path to the JSON config file
+  token:
+    required: true
+    description: GitHub token or PAT with repo read access and write to the current repository
+
+runs:
+  using: composite
+  steps:
+    - name: Clone template repo
+      shell: bash
+      run: |
+        REPO="${{ inputs.template-repo }}"
+        # Construct full clone URL with token
+        CLONE_URL="https://${{ inputs.token }}@github.com/${REPO}.git"
+        git clone --depth=1 --branch "${{ inputs.template-branch }}" "${CLONE_URL}" template-repo
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Build Go tool
+      shell: bash
+      run: go run main.go
+    - name: commit and push
+      shell: bash
+      run: git diff --patch
