@@ -25,16 +25,26 @@ runs:
         REPO="${{ inputs.template-repo }}"
         # Construct full clone URL with token
         CLONE_URL="https://${{ inputs.token }}@github.com/${REPO}.git"
-        git clone --depth=1 --branch "${{ inputs.template-branch }}" "${CLONE_URL}" template-repo
-
-    - name: Set up Go
-      uses: actions/setup-go@v5
+        git clone --depth=1 --branch "${{ inputs.template-branch }}" "${CLONE_URL}" /tmp/template-repo
+    - name: Clone target repo
+      uses: actions/checkout@v4
       with:
-        go-version: 1.24
+        token: '${{ inputs.token }}'
+    - uses: dcarbone/install-jq-action@v3.2.0
+    - shell: bash
+      run: |
+        jq -r '.files[]' .github/.template-sync.json | while read -r filepath; do
+          src="/tmp/template-repo/$filepath"
+          dest="./$filepath"
 
-    - name: Build Go tool
-      shell: bash
-      run: go run main.go
+          echo "Copying: $src -> $dest"
+
+          # Make sure destination directory exists
+          mkdir -p "$(dirname "$dest")"
+
+          # Copy the file
+          cp "$src" "$dest"
+        done
     - name: commit and push
       shell: bash
       run: git diff --patch
