@@ -21,7 +21,7 @@ inputs:
   comitter:
     description: The committer name and email address in the format `Display Name <email@address.com>`. Defaults to the GitHub Actions bot user.
     default: 'GitHub <noreply@github.com>'
-  target_branch:
+  target-branch:
     default: automated_sync
     description: "The branch to push to in the repository"
 
@@ -60,5 +60,5 @@ runs:
         commit-message: ${{ inputs.commit-message }}
         committer: ${{ inputs.comitter }}
         author: ${{ inputs.comitter }}
-        branch: ${{ inputs.target_branch }}
+        branch: ${{ inputs.target-branch }}
         title: ${{ inputs.commit-message }}
