@@ -14,7 +14,7 @@ inputs:
     description: Path to the JSON config file
   token:
     required: true
-    description: GitHub token or PAT with repo read access and write to the current repository
+    description: GitHub token or PAT with repo read access from template repository and write access to the current repository.
 
 runs:
   using: composite
@@ -30,7 +30,7 @@ runs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.24'
+        go-version-file: go.mod
 
     - name: Build Go tool
       shell: bash
