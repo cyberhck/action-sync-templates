@@ -15,6 +15,15 @@ inputs:
   token:
     required: true
     description: GitHub token or PAT with repo read access from template repository and write access to the current repository.
+  commit-message:
+    default: "chore: sync files"
+    description: The title of the PR and commit message to use
+  comitter:
+    description: The committer name and email address in the format `Display Name <email@address.com>`. Defaults to the GitHub Actions bot user.
+    default: 'GitHub <noreply@github.com>'
+  target_branch:
+    default: automated_sync
+    description: "The branch to push to in the repository"
 
 runs:
   using: composite
@@ -45,6 +54,11 @@ runs:
           # Copy the file
           cp "$src" "$dest"
         done
-    - name: commit and push
-      shell: bash
-      run: git diff --patch
+    - uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ inputs.token }}
+        commit-message: ${{ inputs.commit-message }}
+        committer: ${{ inputs.comitter }}
+        author: ${{ inputs.comitter }}
+        branch: ${{ inputs.target_branch }}
+        title: ${{ inputs.commit-message }}
