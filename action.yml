@@ -42,7 +42,7 @@ runs:
     - uses: dcarbone/install-jq-action@v3.2.0
     - shell: bash
       run: |
-        jq -r '.files[]' ${{ inputs.config-path }} | while read -r filepath; do
+        jq -r '.files[]' target-repo/${{ inputs.config-path }} | while read -r filepath; do
           src="template-repo/$filepath"
           dest="target-repo/$filepath"
 
