@@ -28,13 +28,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Clone template repo
-      shell: bash
-      run: |
-        REPO="${{ inputs.template-repo }}"
-        # Construct full clone URL with token
-        CLONE_URL="https://${{ inputs.token }}@github.com/${REPO}.git"
-        git clone --depth=1 --branch "${{ inputs.template-branch }}" "${CLONE_URL}" /tmp/template-repo
+    - name: Clone source repo
+      uses: actions/checkout@v4
+      with:
+        token: '${{ inputs.token }}'
+        path: /tmp/template-repo
+        repository: '${{ inputs.template-repo }}'
     - name: Clone target repo
       uses: actions/checkout@v4
       with:
