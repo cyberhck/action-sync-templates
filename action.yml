@@ -24,6 +24,9 @@ inputs:
   target-branch:
     default: automated_sync
     description: "The branch to push to in the repository"
+  pr-body:
+    default: 'Synchronized files using cyberhck/action-sync-templates'
+    description: 'The body of the pull request'
 
 runs:
   using: composite
@@ -59,6 +62,7 @@ runs:
         path: target-repo
         token: ${{ inputs.token }}
         commit-message: ${{ inputs.commit-message }}
+        body: ${{ inputs.pr-body }}
         committer: ${{ inputs.comitter }}
         author: ${{ inputs.comitter }}
         branch: ${{ inputs.target-branch }}
